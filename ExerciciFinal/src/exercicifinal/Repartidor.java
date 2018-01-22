@@ -22,31 +22,29 @@ public class Repartidor extends Thread
     private BufferedReader input;
     Caixer caixer;
     
-    public Repartidor (Caixer caixer) 
-    {
-        this.caixer = caixer;
-    }
-    
     public void run()
     {
         File file = new File("compraCajero.in");
-        input = getInputStream(file);
+        input = ExerciciFinal.getInputStream(file);
         
         String line;
         String args[];
         Producto producto;
-        int cantidad, codigo; float tiempo;
+        int numCaixer, cantidad, codigo; float tiempo;
         
         try 
         {
             while ((line = input.readLine()) != null)
             {
                 args = line.split(" ");
+                numCaixer = Integer.parseInt(args[0]);
                 cantidad = Integer.parseInt(args[2]);
                 codigo = Integer.parseInt(args[1]);
                 tiempo = Float.parseFloat(args[3]);
                 
                 producto = new Producto (cantidad, codigo, tiempo);
+                
+                caixer = ExerciciFinal.caixers[numCaixer];
                 
                 synchronized (caixer.productos) 
                 {
@@ -63,21 +61,6 @@ public class Repartidor extends Thread
         catch (InterruptedException ex) 
         {
             Logger.getLogger(Repartidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    
-    
-    /** UTILS **/
-    private BufferedReader getInputStream (File file)
-    {
-        try
-        {
-            return new BufferedReader(new FileReader(file));
-        }
-        catch (FileNotFoundException e)
-        {
-            return null;
         }
     }
 }

@@ -6,6 +6,9 @@
 package exercicifinal;
 
 import java.util.Vector;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,21 +16,39 @@ import java.util.Vector;
  */
 public class Caixer extends Thread 
 {
+    private int numeroCajero;
     public Vector<Producto> productos;
     private boolean isRunning = true;
     
+    final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    
+    public Caixer (int numeroCajero) 
+    {
+        this.numeroCajero = numeroCajero;
+    }
+    
     public void run()
     {
+        Producto producto;
         while (isRunning)
         {
-            if (productos.isEmpty())
+            synchronized (productos) 
             {
-                
+                if (productos.isEmpty())
+                {
+                    try {
+                        productos.wait();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Caixer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    producto = productos.get(0);
+                    productos.remove(producto);
+                }
             }
-            else
-            {
-                
-            }
+                        
         }        
     }
     
