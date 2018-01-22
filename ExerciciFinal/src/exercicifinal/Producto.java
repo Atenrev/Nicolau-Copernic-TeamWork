@@ -20,4 +20,13 @@ public class Producto
         this.codigo = codigo;
         this.tiempo = tiempo;
     }
+    @Override
+    public String toString()
+    {
+        return codigo + " " + cantidad;
+    }
+    public float getTiempo()
+    {
+        return tiempo;
+    }
 }

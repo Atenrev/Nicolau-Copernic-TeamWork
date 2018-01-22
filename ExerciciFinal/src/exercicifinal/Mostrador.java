@@ -24,19 +24,21 @@ public class Mostrador extends Thread
     final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private boolean isRunning = true;
     private BufferedReader input; 
-    File file = new File("productoCajero.out");
+    File file = new File("/home/atenrev/productoCajero.out");
     final long tinicio = 2000, tlinea = 10;
 
-    public void run() {
+    public void run() 
+    {
         input = ExerciciFinal.getInputStream(file);
         String line, producto, total_vendido;
         String args[];
         Vector<String> total = new Vector<>();
+        
         while (isRunning) 
         {
             try 
             {
-                
+                rwl.readLock().lock();
                 while ((line = input.readLine()) != null) {
                     args = line.split(" ");
                     producto = args[1];
@@ -44,9 +46,14 @@ public class Mostrador extends Thread
                     total.add(numero_mostrador + " " + producto + " " + total_vendido);
                     espera(tlinea);
                 }
-            } catch (IOException ex) 
+            } 
+            catch (IOException ex) 
             {
                 Logger.getLogger(Repartidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            finally 
+            {
+                rwl.readLock().unlock();
             }
             total.forEach((_item) -> { System.out.println(_item);});
             espera(tinicio);
