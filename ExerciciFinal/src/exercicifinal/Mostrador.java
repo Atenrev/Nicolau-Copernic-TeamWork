@@ -8,9 +8,7 @@ package exercicifinal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,11 +19,16 @@ import java.util.logging.Logger;
 public class Mostrador extends Thread 
 {
     private int numero_mostrador;
-    final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private boolean isRunning = true;
     private BufferedReader input; 
-    File file = new File("/home/atenrev/productoCajero.out");
-    final long tinicio = 2000, tlinea = 10;
+    File file = new File(ExerciciFinal.salida);
+    private long tinicio = 2000, tlinea = 10;
+    
+    public Mostrador (long tinicio, long tlinea)
+    {
+        this.tinicio = tinicio;
+        this.tlinea = tlinea;
+    }
 
     public void run() 
     {
@@ -38,7 +41,7 @@ public class Mostrador extends Thread
         {
             try 
             {
-                rwl.readLock().lock();
+                ExerciciFinal.rwl.readLock().lock();
                 while ((line = input.readLine()) != null) {
                     args = line.split(" ");
                     producto = args[1];
@@ -53,9 +56,9 @@ public class Mostrador extends Thread
             }
             finally 
             {
-                rwl.readLock().unlock();
+                ExerciciFinal.rwl.readLock().unlock();
             }
-            total.forEach((_item) -> { System.out.println(_item);});
+            total.forEach(System.out::println);
             espera(tinicio);
         }
     }

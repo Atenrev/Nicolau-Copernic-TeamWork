@@ -24,7 +24,7 @@ public class Repartidor extends Thread
     
     public void run()
     {
-        File file = new File("/home/atenrev/compraCajero.in");
+        File file = new File(ExerciciFinal.entrada);
         input = ExerciciFinal.getInputStream(file);
         
         String line;

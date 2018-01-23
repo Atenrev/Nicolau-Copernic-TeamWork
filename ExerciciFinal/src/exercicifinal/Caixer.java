@@ -9,7 +9,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,10 +21,7 @@ public class Caixer extends Thread
     private int numeroCajero;
     public Vector<Producto> productos = new Vector<>();
     private boolean isRunning = true;
-    
     private BufferedWriter output;
-    
-    final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     
     public Caixer (int numeroCajero) 
     {
@@ -35,7 +31,7 @@ public class Caixer extends Thread
     public void run()
     {
         Producto producto = null;
-        File file = new File("/home/atenrev/productoCajero.out");
+        File file = new File(ExerciciFinal.salida);
         
         while (isRunning)
         {
@@ -53,7 +49,7 @@ public class Caixer extends Thread
                 {
                     producto = productos.get(0);
                     productos.remove(producto);
-                    rwl.writeLock().lock();
+                    ExerciciFinal.rwl.writeLock().lock();
                     output = ExerciciFinal.getOutputStream(file);
                     try 
                     {
@@ -66,7 +62,7 @@ public class Caixer extends Thread
                     }
                     finally
                     {
-                        rwl.writeLock().unlock();
+                        ExerciciFinal.rwl.writeLock().unlock();
                         espera((long) producto.getTiempo());
                     }
                 }
